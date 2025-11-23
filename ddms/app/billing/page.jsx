@@ -2,7 +2,6 @@
 import useSWR from 'swr';
 import { useState } from 'react';
 import DataTable from '../../components/DataTable';
-import EditModal from '../../components/EditModal';
 
 const fetcher = (url) => fetch(url).then(r => r.json());
 
