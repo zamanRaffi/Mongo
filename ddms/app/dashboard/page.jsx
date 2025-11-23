@@ -1,5 +1,7 @@
 "use client";
 import useSWR from "swr";
+import AiAssistant from "../../components/AiAssistant";
+import JobStatus from "../../components/JobStatus";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 
@@ -60,6 +62,11 @@ export default function DashboardPage() {
             </div>
           </div>
         ))}
+      </section>
+
+      <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <AiAssistant />
+        <JobStatus />
       </section>
 
       {/* Recent Sales Table */}

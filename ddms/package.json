@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "worker": "node workers/embeddingWorker.js",
+    "migrate:pinecone": "node scripts/migrateEmbeddingsToPinecone.js",
     "lint": "eslint"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@pinecone-database/pinecone": "^6.1.3",
     "bcryptjs": "^2.4.3",
+    "bullmq": "^5.64.1",
+    "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.5.0",
     "next": "16.0.3",

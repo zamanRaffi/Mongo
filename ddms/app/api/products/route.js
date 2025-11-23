@@ -1,5 +1,6 @@
 import connectdb from '../../../lib/mongodb';
 import Product from '../../../models/Product';
+import { createOrUpdateProduct } from '../../../services/productService';
 
 export async function GET(){
   await connectdb();
@@ -12,14 +13,8 @@ export async function POST(req) {
   const dec = requireAuth(req);
   if (!dec) return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
 
-  await connectdb();
   const body = await req.json();
-
-  
-  if (!body.category) body.category = null;
-
-  const p = new Product(body);
-  await p.save();
+  await createOrUpdateProduct(body);
 
   return new Response(JSON.stringify({ ok: true }), { status: 201 });
 }
@@ -29,13 +24,8 @@ export async function PUT(req) {
   const dec = requireAuth(req);
   if (!dec) return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
 
-  await connectdb();
   const body = await req.json();
-
- 
-  if (!body.category) body.category = null;
-
-  if (body.id) await Product.findByIdAndUpdate(body.id, body);
+  await createOrUpdateProduct(body);
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 });
 }
