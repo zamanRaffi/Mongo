@@ -1,7 +1,6 @@
 import connectdb from '../lib/mongodb';
 import Product from '../models/Product';
 import Category from '../models/Category';
-import { embeddingQueue } from '../lib/queue.js';
 
 export async function createOrUpdateProduct(body) {
   await connectdb();
@@ -26,12 +25,12 @@ export async function createOrUpdateProduct(body) {
     } catch (e) {}
   }
 
-  // enqueue embedding job for background processing (worker will compute + upsert)
-  try {
-    await embeddingQueue.add('index-product', { productId: String(product._id) }, { attempts: 3, backoff: { type: 'exponential', delay: 1000 } });
-  } catch (err) {
-    console.error('Failed to enqueue embedding job', product._id, err.message || err);
-  }
+  // // enqueue embedding job for background processing (worker will compute + upsert)
+  // try {
+  //   await embeddingQueue.add('index-product', { productId: String(product._id) }, { attempts: 3, backoff: { type: 'exponential', delay: 1000 } });
+  // } catch (err) {
+  //   console.error('Failed to enqueue embedding job', product._id, err.message || err);
+  // }
 
   return product;
 }

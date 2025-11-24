@@ -14,17 +14,36 @@ export default function SalesPage() {
   const products = productData?.items || [];
 
   const [show, setShow] = useState(false);
-  const [product, setProduct] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [saleItems, setSaleItems] = useState([{ productId: "", quantity: 1 }]);
   const [editingId, setEditingId] = useState(null);
 
+  // Add a new item row
+  const addItem = () => setSaleItems([...saleItems, { productId: "", quantity: 1 }]);
+
+  // Update item
+  const updateItem = (index, key, value) => {
+    const newItems = [...saleItems];
+    newItems[index][key] = key === "quantity" ? parseInt(value) : value;
+    setSaleItems(newItems);
+  };
+
   async function save() {
-    if (!product) return alert("Please select a product");
+    if (saleItems.some((i) => !i.productId)) return alert("Select all products");
 
-    const payload = { product, quantity };
-    const method = editingId ? "PUT" : "POST";
+    // Calculate total for each item
+    const payloadItems = saleItems.map((i) => {
+      const prod = products.find((p) => p._id === i.productId);
+      return {
+        productId: i.productId,
+        quantity: i.quantity,
+        total: prod ? prod.price * i.quantity : 0,
+      };
+    });
 
+    const payload = { items: payloadItems };
     if (editingId) payload.id = editingId;
+
+    const method = editingId ? "PUT" : "POST";
 
     const res = await fetch("/api/sales", {
       method,
@@ -35,16 +54,19 @@ export default function SalesPage() {
     if (res.ok) {
       mutate();
       setShow(false);
-      setProduct("");
-      setQuantity("");
+      setSaleItems([{ productId: "", quantity: 1 }]);
       setEditingId(null);
     }
   }
 
   function openEdit(row) {
     setEditingId(row._id);
-    setProduct(row.product?._id || row.product || "");
-    setQuantity(row.quantity || 1);
+    setSaleItems(
+      row.items.map((i) => ({
+        productId: i.productId?._id || i.productId,
+        quantity: i.quantity,
+      }))
+    );
     setShow(true);
   }
 
@@ -64,7 +86,6 @@ export default function SalesPage() {
     <div className="p-6 bg-gray-50 min-h-screen">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Sales</h1>
-
         <button
           onClick={() => setShow(true)}
           className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
@@ -75,10 +96,15 @@ export default function SalesPage() {
 
       <div className="bg-white text-black shadow-lg rounded-xl overflow-hidden">
         <DataTable
-          columns={["Product", "Quantity", "Total"]}
-          data={items}
+          columns={["Products", "Quantity", "Total"]}
+          data={items.map((row) => ({
+            products: row.items.map((i) => i.productId?.name || "Unknown").join(", "),
+            quantity: row.items.reduce((sum, i) => sum + i.quantity, 0),
+            total: row.items.reduce((sum, i) => sum + i.total, 0),
+            _id: row._id,
+          }))}
           actions={[
-            { label: "Edit", onClick: (row) => openEdit(row) },
+            { label: "Edit", onClick: (row) => openEdit(items.find((i) => i._id === row._id)) },
             { label: "Delete", onClick: (row) => remove(row._id) },
           ]}
         />
@@ -92,26 +118,35 @@ export default function SalesPage() {
             </h2>
 
             <div className="space-y-4 text-black">
-              <select
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
+              {saleItems.map((item, idx) => (
+                <div key={idx} className="flex gap-2">
+                  <select
+                    className="flex-1 border border-gray-300 px-3 py-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    value={item.productId}
+                    onChange={(e) => updateItem(idx, "productId", e.target.value)}
+                  >
+                    <option value="">Select Product</option>
+                    {products.map((p) => (
+                      <option key={p._id} value={p._id}>
+                        {p.name} — ${p.price}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    className="w-20 border border-gray-300 px-3 py-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    type="number"
+                    min="1"
+                    value={item.quantity}
+                    onChange={(e) => updateItem(idx, "quantity", e.target.value)}
+                  />
+                </div>
+              ))}
+              <button
+                onClick={addItem}
+                className="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700"
               >
-                <option value="">Select Product</option>
-                {products.map((p) => (
-                  <option key={p._id} value={p._id}>
-                    {p.name} — ${p.price}
-                  </option>
-                ))}
-              </select>
-
-              <input
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="Quantity"
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-              />
+                + Add Item
+              </button>
             </div>
 
             <div className="flex justify-end mt-5 gap-3">
@@ -119,12 +154,12 @@ export default function SalesPage() {
                 onClick={() => {
                   setShow(false);
                   setEditingId(null);
+                  setSaleItems([{ productId: "", quantity: 1 }]);
                 }}
                 className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
-
               <button
                 onClick={save}
                 className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-md transition"
@@ -136,20 +171,12 @@ export default function SalesPage() {
         </div>
       )}
 
-      <style>
-        {`
+      <style>{`
         .animate-fadeIn { animation: fadeIn .15s ease-out; }
         .animate-scaleIn { animation: scaleIn .18s ease-out; }
-
-        @keyframes fadeIn {
-          from { opacity: 0; } to { opacity: 1; }
-        }
-        @keyframes scaleIn {
-          from { transform: scale(.95); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-      `}
-      </style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      `}</style>
     </div>
   );
 }

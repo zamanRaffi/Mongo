@@ -1,4 +1,3 @@
-// components/Sidebar.jsx
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,7 +10,7 @@ const { setIsAuthenticated } = useAuth();
 async function handleLogout() {
 try {
  await fetch("/api/auth/logout", { method: "POST" });
- setIsAuthenticated(false); // immediately hide sidebar
+ setIsAuthenticated(false); 
  router.push("/login");
 } catch (e) {
  console.error("Logout failed", e);
@@ -42,6 +41,12 @@ return (
  </Link>
  <Link href="/billing">
  <span className="block px-3 py-2 rounded hover:bg-gray-100">Billing</span>
+ </Link>
+   <Link href="/customers">
+   <span className="block px-3 py-2 rounded hover:bg-gray-100">Customers</span>
+   </Link>
+ <Link href="/analytics">
+ <span className="block px-3 py-2 rounded hover:bg-gray-100">Analytics</span>
  </Link>
  <button
  onClick={handleLogout}

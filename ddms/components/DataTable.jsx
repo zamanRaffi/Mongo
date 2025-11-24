@@ -1,64 +1,80 @@
 "use client";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 export default function DataTable({ columns = [], data = [], actions = [] }) {
+
+  // Normalize columns so both string and object formats work
+  const normalizedColumns = columns.map((col) => {
+    if (typeof col === "string") {
+      return {
+        header: col,
+        accessor: col.toLowerCase().replace(/ /g, ""),
+      };
+    }
+    return col;
+  });
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden shadow-sm">
+
+        {/* HEADER */}
         <thead className="bg-gray-100">
           <tr>
-            {columns.map((col, idx) => (
+            {normalizedColumns.map((col, idx) => (
               <th
                 key={idx}
                 className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider"
               >
-                {col}
+                {col.header}
               </th>
             ))}
-            {actions.length > 0 && <th className="px-6 py-3"></th>}
+            {actions.length > 0 && (
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">
+                Actions
+              </th>
+            )}
           </tr>
         </thead>
 
+        {/* BODY */}
         <tbody className="bg-white divide-y divide-gray-200">
           {data.map((row, idx) => (
-            <tr
-              key={row._id || idx}
-              className="hover:bg-gray-50 transition-colors"
-            >
-              {columns.map((col, cIdx) => {
-                const key = col.toLowerCase();
-                const value = row[key];
+            <tr key={row._id || idx} className="hover:bg-gray-50 transition-colors">
+              
+              {normalizedColumns.map((col, cIdx) => {
+                let value;
+
+                // If accessor is a function
+                if (typeof col.accessor === "function") {
+                  value = col.accessor(row);
+                }
+
+                // If accessor is a key string
+                else if (typeof col.accessor === "string") {
+                  value = row[col.accessor];
+                }
 
                 return (
                   <td key={cIdx} className="px-6 py-4 text-sm text-gray-700">
-                    {/* Handle Object Values (like product object) */}
-                    {typeof value === "object" && value !== null
-                      ? value.name || value._id || "Unknown"
-                      : value || ""}
+                    {value !== null && value !== undefined ? value : ""}
                   </td>
                 );
               })}
 
+              {/* Actions column */}
               {actions.length > 0 && (
-                <td className="px-6 py-4 flex gap-2">
+                <td className="px-6 py-4 text-sm text-gray-700 flex gap-2">
                   {actions.map((action, aIdx) => {
-                    const isEdit = action.label.toLowerCase() === "edit";
+                    let bgColor = "bg-blue-600 hover:bg-blue-700"; // default
+                    if (action.label.toLowerCase() === "edit") bgColor = "bg-yellow-500 hover:bg-yellow-600";
+                    if (action.label.toLowerCase() === "delete") bgColor = "bg-red-600 hover:bg-red-700";
+
                     return (
                       <button
                         key={aIdx}
                         onClick={() => action.onClick(row)}
-                        className={`flex items-center gap-1 px-3 py-1 text-sm rounded-lg font-medium transition-colors ${
-                          isEdit
-                            ? "bg-yellow-400 text-white hover:bg-yellow-500"
-                            : "bg-red-500 text-white hover:bg-red-600"
-                        }`}
-                        title={action.label}
+                        className={`px-3 py-1 text-sm font-medium rounded-lg text-white ${bgColor} transition`}
                       >
-                        {isEdit ? (
-                          <PencilIcon className="w-4 h-4" />
-                        ) : (
-                          <TrashIcon className="w-4 h-4" />
-                        )}
                         {action.label}
                       </button>
                     );
@@ -68,6 +84,7 @@ export default function DataTable({ columns = [], data = [], actions = [] }) {
             </tr>
           ))}
         </tbody>
+
       </table>
     </div>
   );
