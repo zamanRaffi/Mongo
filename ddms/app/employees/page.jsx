@@ -60,7 +60,7 @@ export default function EmployeesPage() {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-50 min-h-screen">
       {/* Header */}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-2 sm:mb-0">Employees</h1>
@@ -73,7 +73,7 @@ export default function EmployeesPage() {
       </header>
 
       {/* Table */}
-      <div className="bg-white shadow-lg rounded-xl overflow-hidden">
+      <div className="bg-white/30 backdrop-blur-md rounded-2xl shadow-md overflow-hidden">
         <DataTable
           columns={["Name", "Email", "Role", "Phone"]}
           data={items}

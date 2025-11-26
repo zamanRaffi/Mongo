@@ -11,7 +11,17 @@ export async function POST(req) {
     // Since the prompt already contains the inventory context and system instructions, 
     // we simply format it into a message for the Gemini API.
     const messages = [
-        { role: 'user', content: prompt } 
+      {
+        role: "system",
+        content:
+          "You are a smart assistant. You can answer ANY kind of general question normally. " +
+          "If the user asks about inventory, products, stock, sales, employees, customers or dashboard data, " +
+          "then use the provided context inside the prompt."
+      },
+      {
+        role: "user",
+        content: prompt
+      }
     ];
 
     const geminiResponse = await chatResponse(messages);

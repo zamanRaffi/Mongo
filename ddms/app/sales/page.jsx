@@ -83,7 +83,7 @@ export default function SalesPage() {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-50 min-h-screen">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Sales</h1>
         <button
@@ -94,7 +94,7 @@ export default function SalesPage() {
         </button>
       </header>
 
-      <div className="bg-white text-black shadow-lg rounded-xl overflow-hidden">
+      <div className="bg-white/30 backdrop-blur-md rounded-2xl shadow-md overflow-hidden">
         <DataTable
           columns={["Products", "Quantity", "Total"]}
           data={items.map((row) => ({

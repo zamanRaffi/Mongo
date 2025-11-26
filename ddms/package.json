@@ -17,10 +17,12 @@
     "bullmq": "^5.64.1",
     "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.0",
+    "lucide-react": "^0.555.0",
     "mongoose": "^7.5.0",
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-hot-toast": "^2.6.0",
     "swr": "^2.2.0",
     "uuid": "^9.0.0"
   },
