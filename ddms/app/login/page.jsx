@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, ShoppingBag } from "lucide-react"; // Imported ShoppingBag for branding
 import { useRouter } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
 
   const router = useRouter();
+   const { setUser } = useAuth();
 
   // Load saved email from localStorage if Remember Me was checked
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function LoginPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
+      credentials: "include",
     });
 
     const data = await res.json();
@@ -52,6 +55,7 @@ export default function LoginPage() {
     }
 
     // Use router.push instead of window.location.href for Next.js best practice
+     setUser(data.user);
     router.push("/dashboard"); 
   }
 

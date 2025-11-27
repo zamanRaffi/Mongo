@@ -4,41 +4,30 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      if (typeof window === "undefined") return;
-      const pathname = window.location.pathname;
-      const publicPaths = ["/", "/login", "/signup"];
-      if (publicPaths.includes(pathname)) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
+    const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch("/api/auth/me", { credentials: "include" });
         if (res.ok) {
-          setIsAuthenticated(true);
+          const data = await res.json();
+          setUser(data.user);
         } else {
-          setIsAuthenticated(false);
-          window.location.href = "/login";
+          setUser(null);
         }
-      } catch (e) {
-        setIsAuthenticated(false);
-        window.location.href = "/login";
+      } catch {
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
-
-    checkAuth();
+    fetchUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

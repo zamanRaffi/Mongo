@@ -1,7 +1,17 @@
-import { requireAuth } from '../../../../lib/auth';
+import connectdb from "../../../../lib/mongodb";
+import User from "../../../../models/User";
+import { verifyToken } from "../../../../lib/auth";
 
-export async function GET(req){
-  const decoded = requireAuth(req);
-  if (!decoded) return new Response(JSON.stringify({ error: 'Not authenticated' }), { status: 401 });
-  return new Response(JSON.stringify({ user: { id: decoded.id, email: decoded.email } }), { status: 200 });
+export async function GET(req) {
+  await connectdb();
+  const token = req.cookies.get("token")?.value;
+  if (!token) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+
+  const decoded = verifyToken(token);
+  if (!decoded) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+
+  const user = await User.findById(decoded.id).select("-password");
+  if (!user) return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
+
+  return new Response(JSON.stringify({ user }));
 }

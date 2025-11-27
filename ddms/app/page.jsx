@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useAuth } from "./context/AuthContext";
 import { Zap, ShoppingBag, TrendingUp, Grid, Facebook, Twitter, Linkedin, X} from 'lucide-react'; // Importing icons for features
 
 export default function Home() {

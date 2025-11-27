@@ -1,11 +1,21 @@
 "use client";
+import { useAuth } from "../context/AuthContext";
 import useSWR from "swr";
 import AiAssistant from "../../components/AiAssistant";
-import { Box, Tags, Users, Truck, DollarSign, FileText, UserCheck } from "lucide-react";
+import { Box, Tags, Users, Truck, DollarSign, FileText } from "lucide-react";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 
 export default function DashboardPage() {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+  if (!user) {
+    if (typeof window !== "undefined") window.location.href = "/login";
+    return null;
+  }
+
+  // Fetch data
   const { data: prodData } = useSWR("/api/products", fetcher);
   const { data: catData } = useSWR("/api/categories", fetcher);
   const { data: empData } = useSWR("/api/employees", fetcher);
@@ -47,10 +57,7 @@ export default function DashboardPage() {
       {/* Stats Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {stats.map((stat) => (
-          <div
-            key={stat.title}
-            className={`flex items-center justify-between p-6 rounded-xl shadow-xl bg-white/20 backdrop-blur-md hover:shadow-2xl transition`}
-          >
+          <div key={stat.title} className={`flex items-center justify-between p-6 rounded-xl shadow-xl bg-white/20 backdrop-blur-md hover:shadow-2xl transition`}>
             <div>
               <div className="text-sm text-black">{stat.title}</div>
               <div className="text-2xl font-bold">{stat.value}</div>
