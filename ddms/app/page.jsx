@@ -1,242 +1,198 @@
 "use client";
-
 import Link from "next/link";
-import { useAuth } from "./context/AuthContext";
-import { Zap, ShoppingBag, TrendingUp, Grid, Facebook, Twitter, Linkedin, X} from 'lucide-react'; // Importing icons for features
+import { Zap, ShoppingBag, TrendingUp, Grid, Truck, Layers, Barcode, CheckCircle, Mail, Phone, Globe, Instagram , Youtube, ChevronDown, Clock, DollarSign, RefreshCw, Warehouse, Facebook, X, Linkedin } from 'lucide-react';
+import Footer from '../components/footer';
+// Helper Component for Feature Cards (Optimized for density)
+const FeatureCard = ({ icon, title, description }) => (
+  <div className="p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition duration-300 transform hover:-translate-y-1">
+    <div className="p-3 bg-blue-50 rounded-lg inline-block mb-3">
+      {icon}
+    </div>
+    <h3 className="text-lg font-bold mb-2 text-gray-900">{title}</h3>
+    <p className="text-sm text-gray-600">{description}</p>
+  </div>
+);
+
+// Helper Component for Integration Logos
+const IntegrationLogo = ({ name, icon: Icon, colorClass }) => (
+  <div className="p-4 bg-white border border-gray-200 rounded-lg flex flex-col items-center justify-center space-y-2 hover:shadow-md transition duration-300">
+    <Icon className={`w-8 h-8 ${colorClass}`} />
+    <span className="text-xs font-medium text-gray-600">{name}</span>
+  </div>
+);
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-50 text-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden">
       
-      {/* HEADER */}
-      <header className="sticky top-0 z-10 p-4 max-w-7xl mx-auto backdrop-blur-xl bg-white/70 rounded-b-2xl shadow-lg transition duration-500 hover:shadow-xl">
+      {/* HEADER (Clean, Professional, Sticky) */}
+      <header className="sticky top-0 z-50 p-4 max-w-full mx-auto backdrop-blur-md bg-white/95 border-b border-gray-200 shadow-sm">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
-          <div className="text-3xl font-extrabold text-blue-600 flex items-center gap-2">
-            <ShoppingBag className="w-6 h-6"/> Whomo
+          <div className="text-3xl font-extrabold text-blue-700 flex items-center gap-2">
+            <Warehouse className="w-6 h-6"/> Whomo Inventory
           </div>
-          <nav className="hidden md:flex gap-8 items-center font-medium">
-            <button
-              onClick={() => {
-                document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="text-gray-700 hover:text-blue-600 transition duration-300 relative group"
-            >
-              About
-              <span className="absolute left-0 bottom-0 h-0.5 w-0 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-            </button>
-
-            <button
-              onClick={() => {
-                document.getElementById("feature")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="text-gray-700 hover:text-blue-600 transition duration-300 relative group"
-            >
-              Features
-              <span className="absolute left-0 bottom-0 h-0.5 w-0 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-            </button>
-
-            <button
-              onClick={() => {
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="text-gray-700 hover:text-blue-600 transition duration-300 relative group"
-            >
-              Contact
-              <span className="absolute left-0 bottom-0 h-0.5 w-0 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-            </button>
-
+          <nav className="hidden md:flex gap-8 items-center font-medium text-gray-700">
+            <Link href="#features" className="hover:text-blue-600 transition duration-200">Features</Link>
+            <Link href="#integrations" className="hover:text-blue-600 transition duration-200">Integrations</Link>
+            <Link href="/pricing" className="hover:text-blue-600 transition duration-200">Pricing</Link>
+            <Link href="#contact" className="hover:text-blue-600 transition duration-200">Support</Link>
+          </nav>
+          <div className="flex gap-4 items-center">
             <Link href="/login" passHref>
-              <button className="px-6 py-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">
+              <button className="text-blue-600 font-semibold hover:text-blue-800 transition duration-200 hidden sm:block">
                 Login
               </button>
-            </Link>
-          </nav>
-          {/* Mobile Menu Placeholder - For a full solution, you'd add a hamburger menu here */}
-          <div className="md:hidden">
-            <Link href="/login" passHref>
-              <button className="text-blue-600 font-semibold">Login</button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* HERO SECTION */}
-      <section className="flex flex-col-reverse md:flex-row items-center justify-between max-w-7xl mx-auto p-6 md:py-32">
-        <div className="md:w-1/2 space-y-8 mt-12 md:mt-0 text-center md:text-left animate-slideInLeft">
-          <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-            Inventory Management Reimagined
-          </span>
-          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900">
-            Smart Inventory, <br className="hidden md:inline"/> Smarter Decisions
-          </h1>
-          <p className="text-gray-600 text-lg md:text-xl max-w-lg mx-auto md:mx-0">
-            Track products, organize categories, monitor sales, and leverage **AI-powered insights** to grow your business effortlessly.
-          </p>
-          <Link href="/dashboard" passHref>
-            <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg rounded-xl shadow-2xl hover:shadow-blue-500/50 transition duration-300 transform hover:scale-[1.02] font-semibold animate-bounceOnce">
-              <Zap className="w-5 h-5"/> Start Managing Now
-            </button>
-          </Link>
-        </div>
-        <div className="md:w-1/2 animate-slideInRight">
-          {/* Using a more modern placeholder/illustration style */}
-          <div className="p-8 bg-white/70 rounded-3xl shadow-2xl">
-            <img
-              src="/hero-image.png"
-              alt="Inventory Management Dashboard Illustration"
-              className="w-full h-auto rounded-lg"
-            />
+      {/* HERO SECTION (Focus on comprehensive solution) */}
+      <section className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 md:py-32 border-b border-blue-100">
+        <div className="flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto">
+          <div className="md:w-1/2 space-y-6 mt-12 md:mt-0 text-center md:text-left">
+            <p className="text-lg font-semibold text-blue-600 uppercase tracking-widest">
+              The Complete Inventory Management Software
+            </p>
+            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-gray-900">
+              Control Inventory. <br/> Manage Orders. <br/> Grow Sales.
+            </h1>
+            <p className="text-gray-600 text-xl max-w-lg mx-auto md:mx-0">
+              Whomo Inventory is a powerful, cloud-based platform that handles stock tracking, order fulfillment, and multi-channel synchronization, helping you save time and money.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center md:justify-start">
+              <Link href="/trial" passHref>
+                <button className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white text-lg rounded-xl shadow-lg hover:shadow-blue-500/50 transition duration-300 transform hover:scale-[1.02] font-semibold">
+                  Start Your 14-Day Free Trial
+                </button>
+              </Link>
+              <button className="px-8 py-3 border-2 border-blue-600 text-blue-600 text-lg rounded-xl transition duration-300 hover:bg-blue-50 font-semibold">
+                See Live Demo
+              </button>
+            </div>
+          </div>
+          <div className="md:w-1/2 mt-12 md:mt-0">
+            {/* Placeholder for a detailed dashboard screenshot/illustration */}
+            <div className="p-8 bg-white rounded-3xl shadow-2xl border border-gray-100">
+              <img
+                src="/zoho-inventory-dashboard-mockup.png" // Placeholder
+                alt="Detailed Inventory Dashboard"
+                className="w-full h-auto rounded-lg border border-gray-200"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* FEATURE CARDS */}
-      <section id="feature" className="max-w-7xl mx-auto p-6 my-24">
-        <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">Key Features</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          <FeatureCard 
-            icon={<ShoppingBag className="w-8 h-8 text-blue-600"/>} 
-            title="Manage Products" 
-            description="Quickly add, edit, and remove products with a streamlined, intuitive interface. Keep track of stock in real-time."
-          />
-
-          <FeatureCard 
-            icon={<TrendingUp className="w-8 h-8 text-indigo-600"/>} 
-            title="Track Sales & Analytics" 
-            description="View detailed sales analytics and inventory turnover to forecast demand and optimize purchasing."
-          />
-          
-          <FeatureCard 
-            icon={<Grid className="w-8 h-8 text-teal-600"/>} 
-            title="Organize Categories" 
-            description="Structure your entire inventory with easy-to-manage categories and tags for quick access and reporting."
-          />
-        </div>
-      </section>
-
-      {/* ABOUT SECTION - More emphasis and space */}
-      <section id="about" className="max-w-5xl mx-auto p-6 my-20 bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl border border-blue-100 animate-fadeIn">
-        <h2 className="text-4xl font-bold mb-6 text-center text-blue-700">The Whomo Difference</h2>
-        <div className="flex flex-col md:flex-row items-start gap-8">
-          <div className="text-5xl font-extrabold text-blue-500 opacity-70">
-            <Zap className="w-12 h-12"/> AI
-          </div>
-          <p className="text-gray-700 text-lg leading-relaxed">
-            Whomo is designed for small to medium businesses looking for an edge. Our platform doesn't just manage data; it provides **AI-powered insights** to predict stockouts, suggest optimal reorder points, and analyze sales trends. Simplify operations and make data-driven decisions faster than ever.
-          </p>
-        </div>
-      </section>
-
-      {/* FOOTER / CONTACT */}
-      <footer id="contact" className="bg-gray-900 text-white p-12 mt-24">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12 border-b border-gray-700 pb-10 mb-10">
-          <div>
-            <h3 className="text-2xl font-bold mb-4 text-blue-400">Whomo IMS</h3>
-            <p className="text-gray-400">Efficient inventory management powered by AI for modern businesses.</p>
-          </div>
-          
-          <div>
-            <h3 className="text-xl font-semibold mb-4 border-b border-blue-500/50 pb-2">Quick Links</h3>
-            <ul className="space-y-2">
-  <li><a href="#" className="hover:text-blue-400 transition">Home</a></li>
-  <li><button
-        onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-        className="hover:text-blue-400 transition"
-      >About</button></li>
-  <li>
-    <Link href="/login" className="hover:text-blue-400 transition">Login</Link>
-  </li>
-</ul>
-
-          </div>
-          
-          <div>
-            <h3 className="text-xl font-semibold mb-4 border-b border-blue-500/50 pb-2">Get In Touch</h3>
-            <p className="text-gray-400 mb-2">Email: <a href="mailto:support@whomo.com" className="hover:text-blue-400">support@whomo.com</a></p>
-            <p className="text-gray-400">Phone: <span className="text-white">+123 456 7890</span></p>
-          </div>
-          
-          <div>
-  <h3 className="text-xl font-semibold mb-4 border-b border-blue-500/50 pb-2">Connect</h3>
-  <div className="flex gap-4"> {/* Removed text-2xl, sizing icons explicitly */}
-    {/* Facebook */}
-    <Link 
-      href="#" 
-      className="hover:text-blue-400 transition"
-      aria-label="Follow us on Facebook" // Added for accessibility
-    >
-      <Facebook className="w-6 h-6" /> 
-    </Link>
-    
-    {/* Twitter */}
-    <Link 
-      href="#" 
-      className="hover:text-blue-400 transition"
-      aria-label="Follow us on Twitter"
-    >
-      <Twitter className="w-6 h-6" /> 
-    </Link>
-    
-    {/* LinkedIn */}
-    <Link 
-      href="#" 
-      className="hover:text-blue-400 transition"
-      aria-label="Connect with us on LinkedIn"
-    >
-      <Linkedin className="w-6 h-6" /> 
-    </Link>
-
-      <Link 
-      href="#" 
-      className="hover:text-blue-400 transition"
-      aria-label="Follow us on Twitter"
-    >
-      <X className="w-6 h-6" /> 
-    </Link>
-  </div>
-</div>
-        </div>
-        <p className="text-center text-gray-500 mt-8 text-sm">© 2025 Whomo IMS. All rights reserved.</p>
-      </footer>
-
-      {/* Additional Components (defined outside the main export for clarity) */}
-      <style jsx global>{`
-        /* Custom Keyframes */
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-50px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(50px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes bounceOnce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-3px); }
-        }
+      {/* CORE FEATURES GRID (High feature density) */}
+      <section id="features" className="max-w-7xl mx-auto p-6 my-20">
+        <h2 className="text-4xl font-extrabold text-center mb-4 text-gray-800">
+          Simplify Every Inventory Process
+        </h2>
+        <p className="text-center text-xl text-gray-500 mb-12">
+          From tracking to reporting, Whomo gives you real-time control.
+        </p>
         
-        /* Apply animations (using Tailwind utility for stagger where needed) */
-        .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
-        .animate-slideInLeft { animation: slideInLeft 0.8s ease-out; }
-        .animate-slideInRight { animation: slideInRight 0.8s ease-out; }
-        .animate-bounceOnce { animation: bounceOnce 0.6s ease-in-out; }
-      `}</style>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <FeatureCard 
+            icon={<RefreshCw className="w-6 h-6 text-green-600"/>} 
+            title="Real-Time Tracking" 
+            description="Know your stock levels across all locations instantly to prevent stockouts and backorders."
+          />
+
+          <FeatureCard 
+            icon={<Layers className="w-6 h-6 text-indigo-600"/>} 
+            title="Multi-Channel Orders" 
+            description="Manage sales orders from your website, Amazon, and eBay all from one centralized dashboard."
+          />
+          
+          <FeatureCard 
+            icon={<Truck className="w-6 h-6 text-orange-600"/>} 
+            title="Shipping Integration" 
+            description="Automate label generation and sync tracking details with major carriers like FedEx and USPS."
+          />
+
+          <FeatureCard 
+            icon={<Barcode className="w-6 h-6 text-blue-600"/>} 
+            title="Serial & Batch Tracking" 
+            description="Track individual units or batches by serial number for complete visibility and compliance."
+          />
+          
+          <FeatureCard 
+            icon={<Warehouse className="w-6 h-6 text-teal-600"/>} 
+            title="Multiple Warehouses" 
+            description="Control inventory across multiple physical locations, transferring stock with ease."
+          />
+          
+          <FeatureCard 
+            icon={<DollarSign className="w-6 h-6 text-red-600"/>} 
+            title="Landed Costs" 
+            description="Accurately calculate true product costs by including shipping, duties, and handling fees."
+          />
+
+          <FeatureCard 
+            icon={<TrendingUp className="w-6 h-6 text-yellow-600"/>} 
+            title="Demand Forecasting" 
+            description="Use historical data and insights to predict future demand and set optimal reorder points."
+          />
+
+          <FeatureCard 
+            icon={<CheckCircle className="w-6 h-6 text-purple-600"/>} 
+            title="Inventory Audits" 
+            description="Perform cycle counting and full stock takes quickly and accurately using mobile scanners."
+          />
+        </div>
+      </section>
+
+      {/* INTEGRATIONS SECTION (Crucial for a Zoho-like product) */}
+      <section id="integrations" className="bg-gray-50 p-6 md:p-16 my-20">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-extrabold text-center mb-4 text-gray-800">
+            Seamlessly Connect Your Ecosystem
+          </h2>
+          <p className="text-center text-xl text-gray-500 mb-12">
+            Whomo works perfectly with the tools you already use every day.
+          </p>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
+            <IntegrationLogo name="Shopify" icon={ShoppingBag} colorClass="text-teal-500" />
+            <IntegrationLogo name="Amazon" icon={Grid} colorClass="text-orange-500" />
+            <IntegrationLogo name="QuickBooks" icon={Clock} colorClass="text-blue-500" /> 
+            <IntegrationLogo name="eBay" icon={TrendingUp} colorClass="text-red-500" />
+            <IntegrationLogo name="UPS" icon={Truck} colorClass="text-yellow-500" />
+            <IntegrationLogo name="FedEx" icon={Truck} colorClass="text-indigo-500" />
+          </div>
+          
+          <div className="text-center mt-10">
+            <Link href="/integrations" passHref>
+              <button className="text-blue-600 font-semibold text-lg hover:underline transition duration-300">
+                View All 50+ Integrations &rarr;
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+
+      {/* CALL TO ACTION (Bottom of Page) */}
+      <section className="max-w-4xl mx-auto p-6 text-center my-20">
+        <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
+          Ready to Take Control of Your Stock?
+        </h2>
+        <p className="text-xl text-gray-600 mb-8">
+          Join thousands of businesses that trust Whomo Inventory to optimize their operations and maximize profits.
+        </p>
+        <Link href="/signup" passHref>
+          <button className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-blue-600 text-white text-xl rounded-xl shadow-2xl hover:bg-blue-700 transition duration-300 transform hover:scale-[1.05] font-bold">
+            Get Started Today - It's Free!
+          </button>
+        </Link>
+      </section>
+
+      {/* FOOTER */}
+      <Footer />
+
     </div>
   );
 }
-
-// Helper Component for Feature Cards (Better UI encapsulation)
-const FeatureCard = ({ icon, title, description }) => (
-  <div className="p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition duration-500 border-t-4 border-blue-500/70 transform group">
-    <div className="p-3 bg-blue-50 rounded-lg inline-block mb-4 transition duration-300 group-hover:bg-blue-100">
-      {icon}
-    </div>
-    <h3 className="text-xl font-extrabold mb-3 text-gray-900">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </div>
-);

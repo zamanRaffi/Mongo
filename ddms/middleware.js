@@ -42,5 +42,6 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: Object.keys(routeRoles).map(r => `${r}/:path*`)
+  matcher: [
+    ]
 };

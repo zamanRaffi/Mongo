@@ -15,12 +15,12 @@ export default function Sidebar() {
 
   const links = [
     { name: "Dashboard", href: "/dashboard", icon: <Home size={20} />, roles: ["admin", "manager", "employee"] },
-    { name: "Products", href: "/products", icon: <Box size={20} />, roles: ["admin", "manager"] },
+    { name: "Products", href: "/products", icon: <Box size={20} />, roles: ["admin", "manager","employee"] },
     { name: "Categories", href: "/categories", icon: <Tags size={20} />, roles: ["admin", "manager"] },
     { name: "Employees", href: "/employees", icon: <Users size={20} />, roles: ["admin"] },
     { name: "Suppliers", href: "/suppliers", icon: <Truck size={20} />, roles: ["admin", "manager"] },
-    { name: "Sales", href: "/sales", icon: <DollarSign size={20} />, roles: ["admin", "manager"] },
-    { name: "Billing", href: "/billing", icon: <FileText size={20} />, roles: ["admin"] },
+    { name: "Sales", href: "/sales", icon: <DollarSign size={20} />, roles: ["admin", "manager","employee"] },
+    { name: "Billing", href: "/billing", icon: <FileText size={20} />, roles: ["admin","manager"] },
     { name: "Customers", href: "/customers", icon: <UserCheck size={20} />, roles: ["admin", "manager"] },
     { name: "Analytics", href: "/analytics", icon: <BarChart2 size={20} />, roles: ["admin"] },
     

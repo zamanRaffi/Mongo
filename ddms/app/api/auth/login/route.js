@@ -2,25 +2,40 @@ import connectdb from "../../../../lib/mongodb";
 import User from "../../../../models/User";
 import bcrypt from "bcryptjs";
 import { signToken } from "../../../../lib/auth";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   await connectdb();
   const { email, password } = await req.json();
-  if (!email || !password)
-    return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400 });
+
+  if (!email || !password) {
+    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+  }
 
   const user = await User.findOne({ email });
-  if (!user) return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
+  if (!user) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 
-  const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 
   const token = signToken({ id: user._id, email: user.email, role: user.role });
-  const secure = process.env.NODE_ENV === "production";
-  const cookie = `token=${token}; Path=/; Max-Age=${7 * 24 * 3600}; HttpOnly; SameSite=Lax${secure ? "; Secure" : ""}`;
 
-  return new Response(JSON.stringify({ ok: true, user: { name: user.name, email: user.email, role: user.role } }), {
-    status: 200,
-    headers: { "Set-Cookie": cookie, "Content-Type": "application/json" },
+  const res = NextResponse.json({
+    ok: true,
+    user: { name: user.name, email: user.email, role: user.role },
   });
+
+  // Set HttpOnly cookie properly
+  res.cookies.set({
+    name: "token",
+    value: token,
+    httpOnly: true,
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  return res;
 }
+
